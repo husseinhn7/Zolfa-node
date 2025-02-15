@@ -9,6 +9,15 @@ import examRouter from "./routes/examRoute.js";
 import answerRouter from "./routes/answerRoute.js";
 import swaggerJSDoc from "swagger-jsdoc";
 import { serve, setup } from "swagger-ui-express";
+import { globalErrorHandler } from "./common/errorHandlers.js";
+import intakeRoute from "./routes/intakeRoute.js";
+import levelRoute from "./routes/levelRoute.js";
+import studentRoute from "./routes/studentRoute.js";
+import subjectRoute from "./routes/subjectRoute.js";
+import uploadRouter from "./routes/uploads.js";
+import adminRoute from "./routes/adminRoute.js";
+
+
 
 const HOST = networkInterfaces()['Wi-Fi'][1].address
 
@@ -39,9 +48,21 @@ apis : ["./routes/*.js"]
 
 app.use("/api-docs", serve, setup(swaggerJSDoc(swaggerOptions)))
 
-app.use("/api/auth/",authRouter)
-app.use("/api", examRouter)
-app.use("/api", answerRouter)
+app.use("/api/auth/",  authRouter)
+app.use("/api/intake", intakeRoute)
+app.use("/api/level", levelRoute)
+app.use("/api/subject", subjectRoute)
+app.use("/api/student", studentRoute)
+app.use("/api/upload", uploadRouter)
+app.use("/api/admin", adminRoute)
+
+
+
+
+app.use("/api/exam", examRouter)
+app.use("/api/answer", answerRouter)
+app.use(globalErrorHandler)
+
 app.use("*", (req, res)=>{
     res.status(404).send({ msg : `${req.url } not found`})
 })

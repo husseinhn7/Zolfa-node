@@ -1,14 +1,14 @@
 import express from "express"
 import { authOnly } from "../middleware/protected.js"
 import { evaluateExam } from "../middleware/resulteMiddleware.js"
-import { answerExam } from "../controllers/resulteController.js"
+import { answerExam, getAllResults } from "../controllers/resulteController.js"
 
 const answerRouter = express.Router()
 
 
 /**
  * @swagger
- * /exam-results:
+ * /api/exam-results:
  *   post:
  *     summary: Submit exam results.
  *     description: Allows a student to submit their exam results, including marks and other details.
@@ -78,9 +78,108 @@ const answerRouter = express.Router()
  */
 
 
+
+/**
+ * @swagger
+ * /api/answer:
+ *   get:
+ *     summary: Get all exam results with pagination and filtering
+ *     description: Retrieve a list of exam results with optional filters for exam and student.
+ *     tags:
+ *       - Exam Results
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination.
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of results per page.
+ *       - in: query
+ *         name: exam
+ *         schema:
+ *           type: string
+ *         description: Filter results by exam ID.
+ *       - in: query
+ *         name: student
+ *         schema:
+ *           type: string
+ *         description: Filter results by student ID.
+ *     responses:
+ *       200:
+ *         description: A list of exam results.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 totalResults:
+ *                   type: integer
+ *                   example: 50
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 5
+ *                 currentPage:
+ *                   type: integer
+ *                   example: 1
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: "67a99f1660110af67f31a8c8"
+ *                       student:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                             example: "67a98fb19e60aebabab379dd"
+ *                           name:
+ *                             type: string
+ *                             example: "John Doe"
+ *                           email:
+ *                             type: string
+ *                             example: "john@example.com"
+ *                       exam:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                             example: "67a9995668110af67f31a8c8"
+ *                           title:
+ *                             type: string
+ *                             example: "Mathematics Exam"
+ *                       marks:
+ *                         type: integer
+ *                         example: 85
+ *                       status:
+ *                         type: string
+ *                         example: "Passed"
+ *                       dateTaken:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2024-02-10T14:30:00.000Z"
+ *       400:
+ *         description: Invalid request parameters.
+ *       500:
+ *         description: Internal Server Error.
+ */
+
 answerRouter
-.post("/answer", authOnly, evaluateExam, answerExam )
+.post("/", authOnly, evaluateExam, answerExam )
+.get("/",authOnly, getAllResults)
  
+
 
 
 export default answerRouter

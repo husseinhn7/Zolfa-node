@@ -16,6 +16,7 @@ export const loginToken = (user) =>{
 
 
 export const register = async (req, res) => {
+    console.log(req.body)
     const data = await req.body
     const newUser = await userModel.create(data)
     const token = loginToken(newUser)

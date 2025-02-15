@@ -1,35 +1,36 @@
 // models/ExamResult.js
 import mongoose from "mongoose";
 
-const myDB = mongoose.connection.useDb('zolfa');
 
 
 
 const examResultSchema = mongoose.Schema({
   student: {
     type: mongoose.Schema.ObjectId,
-    ref: 'user',  
+    ref: 'User',  
     required: true,
   },
   exam: {
     type: mongoose.Schema.ObjectId,
-    ref: 'exam',
+    ref: 'Exam',
     required: true,
   },
   marks: {
     type: Number,
     required: true,
   },
-  status: {
-    type: String,  
-   },
+   status: {
+    type: String,
+    enum: ["Pending", "Passed", "Failed"],  
+    default: "Pending"
+  },
   dateTaken: {
     type: Date,
     default: Date.now,
   },
 });
 
-const ExamResult = myDB.model('examResult', examResultSchema);
+const ExamResult = mongoose.model('ExamResult', examResultSchema);
 
 
 

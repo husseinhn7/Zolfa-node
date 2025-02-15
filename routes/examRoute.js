@@ -1,5 +1,5 @@
 import express from "express"
-import { createExam, getExam } from "../controllers/examController.js"
+import { createExam, getExam, listExams, deleteExam } from "../controllers/examController.js"
 import { authOnly } from "../middleware/protected.js"
 import { canEditExam } from "../middleware/examMiddelware.js"
 
@@ -8,7 +8,7 @@ const examRouter = express.Router()
 
 /**
  * @swagger
- * /exams:
+ * /api/exam:
  *   post:
  *     summary: Create a new exam.
  *     description: Creates a new exam with the provided questions and other details.
@@ -100,7 +100,7 @@ const examRouter = express.Router()
 
 /**
  * @swagger
- * /exams/{examId}:
+ * /api/exam/{examId}:
  *   get:
  *     summary: Get exam details.
  *     description: Retrieves details of a specific exam by its ID, including the questions.
@@ -165,11 +165,61 @@ const examRouter = express.Router()
  *         description: Exam not found.
  */
 
+/**
+ * @swagger
+ * /api/exam:
+ *   get:
+ *     summary: Get a paginated list of exams
+ *     description: Fetches a paginated list of exams based on query parameters.
+ *     tags:
+ *       - Exams
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of items per page
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *         description: Sorting criteria (e.g., "createdAt" or "-createdAt" for descending)
+ *     responses:
+ *       200:
+ *         description: Successfully fetched exams
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 message:
+ *                   type: string
+ *                   example: "fetched"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Exam'
+ *       400:
+ *         description: Bad request due to invalid query parameters
+ *       500:
+ *         description: Internal server error
+ */
 
 
 examRouter
-.post("/exam", authOnly, canEditExam, createExam)
-.get("/exam/:examId", authOnly, getExam)
+.post("/",authOnly,  createExam)
+.get("/:examId",authOnly,  getExam)
+.get("/",authOnly, listExams)
+.delete("/:id",authOnly,deleteExam)
+
 
 
 

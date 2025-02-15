@@ -24,6 +24,7 @@ const userSChema = mongoose.Schema({
     },
     confirmPassword : {
         type : String,
+        select : false,
         required : [true , "the password is required "],
         validator : function (ele){
             return ele === this.password
@@ -33,13 +34,16 @@ const userSChema = mongoose.Schema({
         type : String
     }, 
     level : {
-        type : mongoose.ObjectId
+        type: mongoose.Schema.ObjectId,
+        ref: 'Level',
     },
     intake : {
-        type : mongoose.ObjectId
+        type: mongoose.Schema.ObjectId,
+        ref: 'Intake',
     },
     role : {
-        type : String
+        type : String,
+        default : "student"
     },
     joiningDate : {
         type: Date,
@@ -60,7 +64,8 @@ const userSChema = mongoose.Schema({
         default : false
     },
     permissions : {
-        type : [String]
+        type : [String],
+        default : []
     },
     passwordChangedAt : Date,
     passwordRestToken : String,
@@ -107,9 +112,8 @@ userSChema.methods.passwordChangedAfter = async function(JWTDate){
     return false
 }
 
-const myDB = mongoose.connection.useDb('zolfa');
 
-const userModel = myDB.model("user" , userSChema)
+const userModel = mongoose.model("User" , userSChema)
 
 
 export default userModel;

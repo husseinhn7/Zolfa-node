@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 
-const myDB = mongoose.connection.useDb('zolfa');
 
 
 
@@ -12,7 +11,7 @@ const examSchema = mongoose.Schema({
     }, 
     creator :{
         type : mongoose.Schema.ObjectId,
-        ref : "user"
+        ref : "User"
     },
     startDate : {
         type : Date,
@@ -24,15 +23,20 @@ const examSchema = mongoose.Schema({
         type :Boolean,
     },  
     subject: {
-        type : String,
+        type : mongoose.Schema.ObjectId,
+        ref : "Subject"
     }, 
     comment: {
         type : String,
     }, 
     questions : {
         type : [mongoose.Schema.ObjectId],
-        ref : "questions"
-    }
+        ref : "Questions"
+    },
+    duration: {
+        type: Number, 
+        required: true
+    },
 
 })
 
@@ -52,7 +56,8 @@ const questionsSchema = mongoose.Schema({
         ]
     },
     correctOption: {
-        type : String
+        type : String,
+        select : false
     } ,
     mark : {
         type : Number
@@ -60,8 +65,8 @@ const questionsSchema = mongoose.Schema({
 }) 
 
 
-const Exam = myDB.model("exam", examSchema)
+const Exam = mongoose.model("Exam", examSchema)
 
-export const Questions = myDB.model("questions", questionsSchema)
+export const Questions = mongoose.model("Questions", questionsSchema)
 
 export default Exam 
